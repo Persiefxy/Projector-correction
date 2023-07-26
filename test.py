@@ -1,8 +1,8 @@
 import argparse
 import cv2, numpy as np
 import os
-from method.decode_gray import gray_decode
-from method.match import relation
+from decode_gray import gray_decode
+from match import relation
 
 # Aruco code position detection in the camera image plane
 def Aruco_detect(gray):
