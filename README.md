@@ -20,7 +20,8 @@ Here we show the fusion effect of the content projected by the two sets of proje
 A projector
 ![avatar](/result/projector_1.jpg)
 B projector
-
+![avatar](/result/projector_2.jpg)
 Input image
-
+![avatar](/result/projector_1&2.jpg)
 Fusion results
+![avatar](/result/result.jpg)
