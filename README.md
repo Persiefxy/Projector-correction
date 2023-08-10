@@ -21,7 +21,9 @@ A projector
 ![avatar](/result/projector_1.jpg)
 B projector
 ![avatar](/result/projector_2.jpg)
-Input image
+A&B projector
 ![avatar](/result/projector_1&2.jpg)
+Input image
+![avatar](/result/pic.png)
 Fusion results
 ![avatar](/result/result.jpg)
