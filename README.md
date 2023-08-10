@@ -12,3 +12,15 @@ We have realized the matching of the pixel coordinates of the projector image pl
 
 2. Correction of projected images
 Image correction can be accomplished by running `python test.py --mode rendering` directly using the matching relation obtained in step 1.
+
+## Result
+
+Here we show the fusion effect of the content projected by the two sets of projectors.
+
+A projector
+![avatar](/result/projector_1.jpg)
+B projector
+
+Input image
+
+Fusion results
