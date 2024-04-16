@@ -3,6 +3,11 @@
 This is an algorithm for image correction before fusion of multiple projectors, where the input image from each projector is corrected to stitch together to get a complete picture.
 
 ## Usage
+
+源数据输入来自data 主要是
+数据生成到result 主要是 match.npy和data.txt 还有最终图片
+python capture_gray.py
+python test.py --mode matching
 We have realized the matching of the pixel coordinates of the projector image plane and the projected image through the medium of the camera, which is selected from FLIR.
 
 1. Matching of projector image plane and projected image pixel coordinates

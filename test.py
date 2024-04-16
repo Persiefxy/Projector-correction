@@ -1,8 +1,8 @@
 import argparse
 import cv2, numpy as np
 import os
-from decode_gray import gray_decode
-from match import relation
+from method.decode_gray import gray_decode
+from method.match import relation
 
 # Aruco code position detection in the camera image plane
 def Aruco_detect(gray):
@@ -38,11 +38,11 @@ def load_images_from_folder(folder):
     return images
 
 # Complete matching of projected image pixel coordinates to projector pixel coordinates
-def matching_test(images_folder, ph_coordinate, parameters, prosize, camsize):
+def matching_test(images_folder, ph_coordinate, parameters, pro_size, cam_size):
     images_list = load_images_from_folder(images_folder)
-    cmr_match_pjt = gray_decode(images_list, parameters)
+    cmr_match_pjt = gray_decode(images_list,pro_size,parameters)
     anchors = Aruco_detect(images_list[45])
-    map_x, map_y = relation(anchors, cmr_match_pjt, ph_coordinate, prosize, camsize)
+    map_x, map_y = relation(anchors, cmr_match_pjt, ph_coordinate, pro_size, cam_size)
     map_x, map_y = map_x.reshape(1, -1, map_x.shape[0], map_x.shape[1]), map_y.reshape(1, -1, map_x.shape[0], map_x.shape[1])
     martrix = np.concatenate((map_x, map_y), axis=1)
     return martrix
@@ -54,8 +54,8 @@ def rendering_test(image, map_matrixs, output_dir):
         cv2.imwrite(f'{output_dir}/{idx}.png', part)
     
 if __name__ == '__main__':
-    pro_size = (1920, 1080) # Projector image plane size
-    cam_size  =(1920, 1200) # Camera image plane size
+    pro_size = (640, 360) # Projector image plane size
+    cam_size  =(1280, 720) # Camera image plane size
     
     parser = argparse.ArgumentParser(
     description='Projector correction')

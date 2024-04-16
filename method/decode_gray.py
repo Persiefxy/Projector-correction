@@ -19,8 +19,7 @@ def gray_decoder(gray):
     return dec
 
 # Filter out matching points and record
-def gray_decode(images, parameters):
-    pro_size = (1920, 1080) # Projector image plane size
+def gray_decode(images,pro_size, parameters):
     n_cols, n_rows = computeNumberOfPatternImages(pro_size[0], pro_size[1])
     n_patterns = n_cols + n_rows
     black_img, white_img = images[n_patterns:n_patterns + 2]
