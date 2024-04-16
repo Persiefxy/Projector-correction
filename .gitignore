@@ -15,7 +15,7 @@ venv/
 
 # Compiled files
 *.pyc
-
+*.bak
 # Dependency directories
 env/
 lib/

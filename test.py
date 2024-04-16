@@ -65,18 +65,16 @@ def rendering_test(image, map_matrixs, output_dir):
     screen=cs.Screen()
     monitors = screen.monitors
     screen = monitors[screen.guiselect()]
-    cv2.namedWindow("GrayCode", cv2.WND_PROP_FULLSCREEN)
-    cv2.moveWindow("GrayCode", screen.x - 1, screen.y - 1)
-    cv2.setWindowProperty("GrayCode", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
-    img1 = cv2.imread('./result/0.jpg')
-    img2 = cv2.imread('./pic2.png')
-    cv2.imshow('GrayCode', img1)
+    cv2.namedWindow("result", cv2.WND_PROP_FULLSCREEN)
+    cv2.moveWindow("result", screen.x - 1, screen.y - 1)
+    cv2.setWindowProperty("result", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+    img = cv2.imread(f'{output_dir}/0.png')
+    cv2.imshow('result', img)
+    # while True:
+    #     if cv2.waitKey(1) & 0xFF == ord(' '):
+    #         break
     cv2.waitKey(0)
-    cv2.destroyAllWindows()
-    cv2.namedWindow("GrayCode", cv2.WND_PROP_FULLSCREEN)
-    cv2.moveWindow("GrayCode", screen.x - 1, screen.y - 1)
-    cv2.setWindowProperty("GrayCode", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
-    cv2.imshow('GrayCode', img2)
+    cv2.imshow('result', image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
