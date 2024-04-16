@@ -1,6 +1,6 @@
 import os
 import cv2, numpy as np
-import PySpin, screeninfo
+import screeninfo
 
 pattern_size = (1920, 1080)
 num_grids = (4, 4)
