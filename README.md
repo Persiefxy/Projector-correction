@@ -7,17 +7,18 @@ This is an algorithm for image correction before fusion of multiple projectors, 
 ## Usage
 
 源数据输入来自data 主要是 capture 和phco.txt 和目标图像pic
+
 数据生成到result 主要是 match.npy和data.txt 还有最终图片
 
 ```
 python capture_gray.py
 python test.py --mode matching 
 python test.py --mode matching --shadow_thresh 80 --code_thresh 40 --projector_id 0 --ph_coordinate './data/phco.txt' --gray_folder './data/240415/captured/position_00a/' --match_np "./result/match.npy"
-python test.py --mode rending 
+python test.py --mode rendering 
 ```
 
 
-We have realized the matching of the pixel coordinates of the projector image plane and the projected image through the medium of the camera, which is selected from FLIR.
+We have realized the matching of the pixel coordinates of the projector image plane and the projected image through the medium of the camera
 
 1. Matching of projector image plane and projected image pixel coordinates
 * You need to first to run `python capture_gray.py` get a set of Gray code photos.
