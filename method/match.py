@@ -10,14 +10,20 @@ def pro_cam_match(cmr_match_pjt, cam_size):
         pro_know.append(i[1:])
         cam_know.append(cmr_match_pjt[i][0])
     pro_know = np.array(pro_know)
+    print(pro_know.shape)
     cam_know = np.array(np.array(cam_know).reshape(-1,2))
     # Interpolation to achieve a one-to-one correspondence between the projection plane and the camera plane results are stored in cam_pro 
     # (how the points in pro are filled into cam)
     grid_x = np.linspace(0, cam_size[0]-1, cam_size[0])  # x coordinate range
     grid_y = np.linspace(0, cam_size[1]-1, cam_size[1])  # y coordinate range
     grid_x, grid_y = np.meshgrid(grid_x, grid_y)
+    # print('grid_x is :',grid_x)
+    # print('grid_y is :',grid_y)
     points_to_remap = np.column_stack((grid_x.flatten(), grid_y.flatten()))
     cam_pro = griddata(cam_know, pro_know, points_to_remap, method='cubic')
+    #cam_pro = griddata(cam_know, pro_know, (grid_x,grid_y), method='cubic')
+    print(cam_pro)
+    print(cam_pro.shape)
     map_x = np.zeros([cam_size[1], cam_size[0]], dtype=float)
     map_y = np.zeros([cam_size[1], cam_size[0]], dtype=float)
     for idx, num in enumerate(cam_pro):
@@ -60,6 +66,7 @@ def predict_unknow(pro, real):
     real_unknow = [] # pro_unknow corresponds to the points in the projected image
     pro_know = [] # Projected coordinates of known points
     real_know = [] # pro_know corresponds to the point of the projected image
+    print('pro is :',pro)
     for idx, num in enumerate(pro):
         if(math.isnan(num[0])):
             pro_unknow.append(num)
@@ -73,6 +80,9 @@ def predict_unknow(pro, real):
         real_unknow = np.array(real_unknow)
         pro_know = np.array(pro_know)
         real_know = np.array(real_know)
+        print(real_know)
+        print('the shape of real_know:',real_know.shape)
+        print('the shape of pro_know:',pro_know.shape)
         M, _ = cv2.findHomography(real_know, pro_know) # transformation matrix
         pro_new = cv2.perspectiveTransform(real_unknow.reshape(-1, 1, 2), M).reshape(-1,2) # Predicted results
         # Record of the matching relationship between the calibration point (real_all) and the projector image plane (pro_all) point in projected images

@@ -1,0 +1,54 @@
+data/
+result/
+# Python
+*.pyc
+__pycache__/
+venv/
+.env
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# IDE
+.idea/
+.vscode/
+
+# Compiled files
+*.pyc
+
+# Dependency directories
+env/
+lib/
+lib64/
+include/
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# PyInstaller
+build/
+*.spec
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# Translations
+*.mo
+
+# Django
+*.log
+local_settings.py
+
+# Flask
+instance/

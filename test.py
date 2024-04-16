@@ -1,8 +1,9 @@
 import argparse
 import cv2, numpy as np
-import os
+import os,screeninfo
 from method.decode_gray import gray_decode
 from method.match import relation
+import method.camera_screen as cs
 
 # Aruco code position detection in the camera image plane
 def Aruco_detect(gray):
@@ -19,13 +20,21 @@ def Aruco_detect(gray):
     parameters =  cv2.aruco.DetectorParameters()
     result = {}
     corners, ids, _ = cv2.aruco.detectMarkers(gray, dict1, parameters=parameters)
-    assert (len(corners)!=0), print("Please retest")
+    #print('corners: ', len(corners))
+    #corners, ids, _ = cv2.aruco.detectMarkers(gray, aruco_dict, parameters=parameters)
+    #assert (len(corners)!=0), print("Please retest")
+    print('corners :',len(corners))
+    if len(corners) == 0:
+        print("Please retest")
+        raise AssertionError
     if ids is not None:
         corners_1 = np.array(corners).reshape(-1, 4, 2)
         center_points = np.mean(corners_1, 1)
     for i, idx in enumerate(ids):
         idx = int(idx)
         result[idx] = center_points[i]
+
+    print('result is :',result)
     return result
 
 # Load captured Gray code image for decoding
@@ -38,10 +47,11 @@ def load_images_from_folder(folder):
     return images
 
 # Complete matching of projected image pixel coordinates to projector pixel coordinates
-def matching_test(images_folder, ph_coordinate, parameters, pro_size, cam_size):
+def matching_test(images_folder, arucodir,ph_coordinate, parameters, pro_size, cam_size):
     images_list = load_images_from_folder(images_folder)
     cmr_match_pjt = gray_decode(images_list,pro_size,parameters)
-    anchors = Aruco_detect(images_list[45])
+    img = cv2.imread(arucodir)
+    anchors = Aruco_detect(img)
     map_x, map_y = relation(anchors, cmr_match_pjt, ph_coordinate, pro_size, cam_size)
     map_x, map_y = map_x.reshape(1, -1, map_x.shape[0], map_x.shape[1]), map_y.reshape(1, -1, map_x.shape[0], map_x.shape[1])
     martrix = np.concatenate((map_x, map_y), axis=1)
@@ -52,11 +62,28 @@ def rendering_test(image, map_matrixs, output_dir):
     for idx,map_martix in enumerate(map_matrixs):
         part = cv2.remap(image, map_martix[0], map_martix[1], interpolation=cv2.INTER_LINEAR)
         cv2.imwrite(f'{output_dir}/{idx}.png', part)
-    
+    screen=cs.Screen()
+    monitors = screen.monitors
+    screen = monitors[screen.guiselect()]
+    cv2.namedWindow("GrayCode", cv2.WND_PROP_FULLSCREEN)
+    cv2.moveWindow("GrayCode", screen.x - 1, screen.y - 1)
+    cv2.setWindowProperty("GrayCode", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+    img1 = cv2.imread('./result/0.jpg')
+    img2 = cv2.imread('./pic2.png')
+    cv2.imshow('GrayCode', img1)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    cv2.namedWindow("GrayCode", cv2.WND_PROP_FULLSCREEN)
+    cv2.moveWindow("GrayCode", screen.x - 1, screen.y - 1)
+    cv2.setWindowProperty("GrayCode", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+    cv2.imshow('GrayCode', img2)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
 if __name__ == '__main__':
     pro_size = (640, 360) # Projector image plane size
     cam_size  =(1280, 720) # Camera image plane size
-    
+    arucodir='./data/aruco2.png'
     parser = argparse.ArgumentParser(
     description='Projector correction')
     parser.add_argument('--shadow_thresh', type=int, default=80,
@@ -65,13 +92,13 @@ if __name__ == '__main__':
                         help='The threshold of the decoded code')
     parser.add_argument('--projector_id', type=int, default = 0,
                         help='The id of the projector')
-    parser.add_argument('--mode',type=str,required=True,
+    parser.add_argument('--mode',type=str, default = "rendering",
                         help='1. matching, 2. rendering')
-    parser.add_argument('--ph_coordinate', type=str, default = './ph_coordinate.txt',
+    parser.add_argument('--ph_coordinate', type=str, default = './data/phco.txt',
                         help='Projection image coordinates, eg: "./ph_coordinate.txt"')
-    parser.add_argument('--gray_folder', type=str, default = './data/230707/captured/position_00a/',
+    parser.add_argument('--gray_folder', type=str, default = './data/240415/captured/position_00a/',
                         help='The folder where Gray codes are stored')
-    parser.add_argument('--match_np', type=str, default = "./match.npy",
+    parser.add_argument('--match_np', type=str, default = "./result/match.npy",
                         help='The file name where the matching results are stored, eg: "./match.npy"')
     parser.add_argument('--test_image', type=str, default = "./pic.png",
                         help='Test image, eg: "./test.png"')
@@ -83,8 +110,8 @@ if __name__ == '__main__':
     
     os.makedirs("./result/", exist_ok=True)
     if(args.mode == 'matching'):
-        martrix = matching_test(args.gray_folder, args.ph_coordinate, parameters, pro_size, cam_size)
-        # np.save(args.match_np, martrix)
+        martrix = matching_test(args.gray_folder, arucodir,args.ph_coordinate, parameters, pro_size, cam_size)
+        np.save(args.match_np, martrix)
         
     if(args.mode == 'rendering'):
         image = cv2.imread(args.test_image)
