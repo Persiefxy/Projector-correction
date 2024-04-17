@@ -30,8 +30,6 @@ def generate_chessboard(pattern_size,square_size=20):
 
 
 
-
-
 def find_corners_sb(img,pattern_size):
     """
     查找棋盘格角点函数 SB升级款
@@ -43,9 +41,10 @@ def find_corners_sb(img,pattern_size):
     if ret:
         # 显示角点
         cv2.drawChessboardCorners(img, pattern_size, corners, ret)
+        return corners
 
 
-def find_corners(img):
+def find_corners(img,pattern_size):
     """
     查找棋盘格角点函数
     :param img: 处理原图
@@ -63,8 +62,8 @@ def find_corners(img):
         corners2 = cv2.cornerSubPix(gray, corners, (11, 11), (-1, -1), criteria)
         # 显示角点
         cv2.drawChessboardCorners(img, pattern_size, corners2, ret)
-
-
+        return corners
+    return -1
 
 if __name__ == '__main__':
         # 1.创建显示窗口
@@ -82,7 +81,7 @@ if __name__ == '__main__':
     # 生成棋盘格图像
     image = generate_chessboard(board_size, square_size)
     # 将灰度图像转换为彩色图像
-    img=cv2.imread("data\OpenCVunabletorecognize1.jpeg")
+    img=cv2.imread("data/OpenCVtabletorecognize1.jpeg")
 
     find_corners_sb(img,(7,5))
     cv2.imshow('img', img)
