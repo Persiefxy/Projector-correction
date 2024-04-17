@@ -6,12 +6,24 @@ This is an algorithm for image correction before fusion of multiple projectors, 
 
 ## Usage
 
-源数据输入来自data 主要是 capture 和phco.txt 和目标图像pic
+源数据输入来自data 主要是：
 
-数据生成到result 主要是 match.npy和data.txt 还有最终图片
+capture文件夹中的捕获的gray码 
+和捕获的aruco15图像与原始图像锚点phco.txt
+ 和目标图像pic
 
+代码主要是：
+在投影机上显示gray码与aruco码的两个文件在当前目录
+其余代码主要围绕test.py
+others文件夹里面为无用代码
+
+数据生成到result主要是：
+每个投影机的 match.npy
+还有最终图片
+运行过程
 ```
 python capture_gray.py
+python generatearuco.py
 python test.py --mode matching
 python test.py --mode matching --shadow_thresh 80 --code_thresh 40 --projector_id 0 --ph_coordinate './data/phco.txt' --gray_folder './data/240415/captured/position_00a/' --match_np "./result/match.npy"
 python test.py --mode rendering
