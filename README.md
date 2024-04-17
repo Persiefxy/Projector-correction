@@ -12,9 +12,9 @@ This is an algorithm for image correction before fusion of multiple projectors, 
 
 ```
 python capture_gray.py
-python test.py --mode matching 
+python test.py --mode matching
 python test.py --mode matching --shadow_thresh 80 --code_thresh 40 --projector_id 0 --ph_coordinate './data/phco.txt' --gray_folder './data/240415/captured/position_00a/' --match_np "./result/match.npy"
-python test.py --mode rendering 
+python test.py --mode rendering
 ```
 
 
@@ -34,12 +34,12 @@ We have realized the matching of the pixel coordinates of the projector image pl
 Here we show the fusion effect of the content projected by the two sets of projectors.
 
 A projector
-![avatar](/result/projector_1.jpg)
+![avatar](/doc/projector_1.jpg)
 B projector
-![avatar](/result/projector_2.jpg)
+![avatar](/doc/projector_2.jpg)
 A&B projector
-![avatar](/result/projector_1&2.jpg)
+![avatar](/doc/projector_1&2.jpg)
 Input image
-![avatar](/result/pic.png)
+![avatar](/pic.png)
 Fusion results
-![avatar](/result/result.jpg)
+![avatar](/doc/result.jpg)
