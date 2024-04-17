@@ -4,6 +4,10 @@ import os,screeninfo
 from method.decode_gray import gray_decode
 from method.match import relation
 import method.camera_screen as cs
+import datetime
+now = datetime.datetime.now()
+date_str = now.strftime("%m%d")
+time_str = now.strftime("%H%M")
 
 # Aruco code position detection in the camera image plane
 def Aruco_detect(gray):
@@ -94,7 +98,12 @@ if __name__ == '__main__':
                         help='1. matching, 2. rendering')
     parser.add_argument('--ph_coordinate', type=str, default = './data/phco.txt',
                         help='Projection image coordinates, eg: "./ph_coordinate.txt"')
-    parser.add_argument('--gray_folder', type=str, default = './data/240415/captured/position_00a/',
+    parser.add_argument('--gray_folder', type=str, default = f'./data/{date_str}/captured/position_{time_str}/'
+
+
+
+
+
                         help='The folder where Gray codes are stored')
     parser.add_argument('--match_np', type=str, default = "./result/match.npy",
                         help='The file name where the matching results are stored, eg: "./match.npy"')

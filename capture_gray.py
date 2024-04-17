@@ -3,7 +3,11 @@ import cv2, numpy as np
 import  screeninfo
 import win32api
 import win32con
-
+import datetime
+now = datetime.datetime.now()
+date_str = now.strftime("%m%d")
+time_str = now.strftime("%H%M")
+import method.camera_screen as cs
 #pattern_size = (1280, 720)
 pattern_size = (640,360)
 num_grids = (4, 4)
@@ -62,12 +66,10 @@ def change_screen_resolution(width, height):
     # 获取当前显示器设备上下文
     device_context = win32api.EnumDisplayDevices()
     device_name = device_context.DeviceName
-
     # 新的分辨率设置
     mode = win32api.EnumDisplaySettings(device_name, win32con.ENUM_CURRENT_SETTINGS)
     mode.PelsWidth = width
     mode.PelsHeight = height
-
     # 改变分辨率
     win32api.ChangeDisplaySettings(mode, 0)
 
@@ -140,9 +142,10 @@ capture_mode = False
 
 
 # 初始化相机
-cam = cv2.VideoCapture(0)  # 假设0是相机的索引，根据实际情况调整
-cam.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-cam.set(cv2.CAP_PROP_FRAME_HEIGHT,720)
+# cam = cv2.VideoCapture(0)  # 假设0是相机的索引，根据实际情况调整
+# cam.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+# cam.set(cv2.CAP_PROP_FRAME_HEIGHT,720)
+cam=cs.Camera("uvc")
 # 主循环
 while True:
     ret, cam_img = cam.read()  # 从相机读取一帧

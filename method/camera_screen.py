@@ -8,8 +8,9 @@ class Camera:
     主要用法
      frame = camera.read()
     """
-    def __init__(self, camera_type):
+    def __init__(self, id=0,camera_type="uvc"):
         self.camera_type = camera_type
+        self.id=id
 
     def open(self,use_dshow=True):
         if self.camera_type == "uvc":
