@@ -74,72 +74,17 @@ def change_screen_resolution(width, height):
     win32api.ChangeDisplaySettings(mode, 0)
 
 
-monitors = screeninfo.get_monitors()
-change_screen_resolution(640,360 )
-screen = monitors[-1]
+#change_screen_resolution(640,360 )
+screen=cs.Screen()
+monitors = screen.monitors
+screen = monitors[screen.guiselect()]
 width, height = screen.width, screen.height
 # cv2.namedWindow("GrayCode", cv2.WND_PROP_FULLSCREEN)
 # cv2.moveWindow("GrayCode", screen.x - 1, screen.y - 1)
 # cv2.setWindowProperty("GrayCode", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 cv2.imshow('GrayCode', grid_img)
 #cv2.waitKey(0)
-
-# system = PySpin.System.GetInstance()
-# cam_list = system.GetCameras()
-# print(cam_list)
-# cam.Init()
-#
-# system = PySpin.System.GetInstance()
-# cam_list = system.GetCameras()
-# assert len(cam_list) > 0
-# cam = cam_list[0]
-# nodemap_tldevice = cam.GetTLDeviceNodeMap()
-# node_device_serial_number = PySpin.CStringPtr(nodemap_tldevice.GetNode('DeviceSerialNumber'))
-# assert PySpin.IsReadable(node_device_serial_number)
-# cam.Init()
-# nodemap = cam.GetNodeMap()
-# sNodemap = cam.GetTLStreamNodeMap()
-#
-# # Change bufferhandling mode to NewestOnly
-# node_bufferhandling_mode = PySpin.CEnumerationPtr(sNodemap.GetNode('StreamBufferHandlingMode'))
-# assert PySpin.IsReadable(node_bufferhandling_mode) and PySpin.IsWritable(node_bufferhandling_mode)
-# node_newestonly = node_bufferhandling_mode.GetEntryByName('NewestOnly')
-# assert PySpin.IsReadable(node_newestonly)
-# node_newestonly_mode = node_newestonly.GetValue()
-# node_bufferhandling_mode.SetIntValue(node_newestonly_mode)
-#
-# node_acquisition_mode = PySpin.CEnumerationPtr(nodemap.GetNode('AcquisitionMode'))
-# assert PySpin.IsReadable(node_acquisition_mode) and PySpin.IsWritable(node_acquisition_mode)
-# node_acquisition_mode_continuous = node_acquisition_mode.GetEntryByName('Continuous')
-# assert PySpin.IsReadable(node_acquisition_mode_continuous)
-# acquisition_mode_continuous = node_acquisition_mode_continuous.GetValue()
-# node_acquisition_mode.SetIntValue(acquisition_mode_continuous)
-#
-# node_exposure_auto = PySpin.CEnumerationPtr(nodemap.GetNode('ExposureAuto'))
-# assert PySpin.IsReadable(node_exposure_auto) and PySpin.IsWritable(node_exposure_auto)
-# node_exposure_auto_off = node_exposure_auto.GetEntryByName('Off')
-# assert PySpin.IsReadable(node_exposure_auto_off)
-# exposure_auto_off = node_exposure_auto_off.GetValue()
-# node_exposure_auto.SetIntValue(exposure_auto_off)
-#
-# node_exposure_time = PySpin.CFloatPtr(nodemap.GetNode('ExposureTime'))
-# assert PySpin.IsReadable(node_exposure_time) and PySpin.IsWritable(node_exposure_time)
-# node_exposure_time.SetValue(120000.0)
-#
-# node_gain_auto = PySpin.CEnumerationPtr(nodemap.GetNode('GainAuto'))
-# assert PySpin.IsReadable(node_gain_auto) and PySpin.IsWritable(node_gain_auto)
-# node_gain_auto_off = node_gain_auto.GetEntryByName('Off')
-# assert PySpin.IsReadable(node_gain_auto_off)
-# gain_auto_off = node_gain_auto_off.GetValue()
-# node_gain_auto.SetIntValue(gain_auto_off)
-# node_gain = PySpin.CFloatPtr(nodemap.GetNode('Gain'))
-# assert PySpin.IsReadable(node_gain) and PySpin.IsWritable(node_gain)
-# node_gain.SetValue(18.0)
-
-#  Begin acquiring images
-#cam.BeginAcquisition()
 capture_mode = False
-
 
 # 初始化相机
 # cam = cv2.VideoCapture(0)  # 假设0是相机的索引，根据实际情况调整

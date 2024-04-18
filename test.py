@@ -58,13 +58,13 @@ def matching_test(images_folder, arucodir,ph_coordinate, parameters, pro_size, c
     anchors = Aruco_detect(img)
     map_x, map_y = relation(anchors, cmr_match_pjt, ph_coordinate, pro_size, cam_size)
     map_x, map_y = map_x.reshape(1, -1, map_x.shape[0], map_x.shape[1]), map_y.reshape(1, -1, map_x.shape[0], map_x.shape[1])
-    martrix = np.concatenate((map_x, map_y), axis=1)
-    return martrix
-    
+    map_matrix = np.concatenate((map_x, map_y), axis=1)
+    return map_matrix
+
 # Corrects the projected image according to the matching result
 def rendering_test(image, map_matrixs, output_dir):
-    for idx,map_martix in enumerate(map_matrixs):
-        part = cv2.remap(image, map_martix[0], map_martix[1], interpolation=cv2.INTER_LINEAR)
+    for idx,map_transformational_matrix in enumerate(map_matrixs):
+        part = cv2.remap(image, map_transformational_matrix[0], map_transformational_matrix[1], interpolation=cv2.INTER_LINEAR)
         cv2.imwrite(f'{output_dir}/{idx}.png', part)
     screen=cs.Screen()
     monitors = screen.monitors
@@ -98,13 +98,9 @@ if __name__ == '__main__':
                         help='1. matching, 2. rendering')
     parser.add_argument('--ph_coordinate', type=str, default = './data/phco.txt',
                         help='Projection image coordinates, eg: "./ph_coordinate.txt"')
-    parser.add_argument('--gray_folder', type=str, default = f'./data/{date_str}/captured/position_{time_str}/'
-
-
-
-
-
-                        help='The folder where Gray codes are stored')
+    parser.add_argument('--gray_folder', type=str,default=r"data\240415\captured\position_00a"
+                        #default = f'./data/{date_str}/captured/position_{time_str}/'
+                        ,help='The folder where Gray codes are stored')
     parser.add_argument('--match_np', type=str, default = "./result/match.npy",
                         help='The file name where the matching results are stored, eg: "./match.npy"')
     parser.add_argument('--test_image', type=str, default = "./pic.png",
@@ -112,14 +108,14 @@ if __name__ == '__main__':
     parser.add_argument('--output_dir', type=str, default = "./result/",
                         help='output image folder, eg: "./result/"')
     args = parser.parse_args()
-    
+
     parameters = [args.code_thresh, args.shadow_thresh, args.projector_id]
-    
+
     os.makedirs("./result/", exist_ok=True)
     if(args.mode == 'matching'):
-        martrix = matching_test(args.gray_folder, arucodir,args.ph_coordinate, parameters, pro_size, cam_size)
-        np.save(args.match_np, martrix)
-        
+        map_matrix = matching_test(args.gray_folder, arucodir,args.ph_coordinate, parameters, pro_size, cam_size)
+        np.save(args.match_np, map_matrix)
+
     if(args.mode == 'rendering'):
         image = cv2.imread(args.test_image)
         matricies = np.load(args.match_np)

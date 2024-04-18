@@ -12,7 +12,7 @@ def pro_cam_match(cmr_match_pjt, cam_size):
     pro_know = np.array(pro_know)
     print(pro_know.shape)
     cam_know = np.array(np.array(cam_know).reshape(-1,2))
-    # Interpolation to achieve a one-to-one correspondence between the projection plane and the camera plane results are stored in cam_pro 
+    # Interpolation to achieve a one-to-one correspondence between the projection plane and the camera plane results are stored in cam_pro
     # (how the points in pro are filled into cam)
     grid_x = np.linspace(0, cam_size[0]-1, cam_size[0])  # x coordinate range
     grid_y = np.linspace(0, cam_size[1]-1, cam_size[1])  # y coordinate range
@@ -30,11 +30,11 @@ def pro_cam_match(cmr_match_pjt, cam_size):
         map_x[idx // cam_size[0]][idx % cam_size[0]] = num[0]
         map_y[idx // cam_size[0]][idx % cam_size[0]] = num[1]
     map_x, map_y = map_x.reshape(-1, map_x.shape[0], map_x.shape[1]), map_y.reshape(-1, map_x.shape[0], map_x.shape[1])
-    martrix = np.concatenate((map_x, map_y), axis=0)
-    return martrix
-    
+    map_matrix = np.concatenate((map_x, map_y), axis=0)
+    return map_matrix
+
 # Matching of the projector image plane and the calibrated points in the projected image
-def pro_real_match(martix, anchors, ph_coordinate):
+def pro_real_match(transformational_matrix, anchors, ph_coordinate):
     cam_know = [] # The position of the Aruco code in the image plane of the camera
     idx_Aruco = [] # Aruco code number
     for key, value in anchors.items():
@@ -44,7 +44,7 @@ def pro_real_match(martix, anchors, ph_coordinate):
     # Matching of projector image plane and projected image
     pro_real = {} # The coordinates of the pointscorresponding to the pixel points in the projector.
     for n, m in enumerate(cam_know):
-        pro_real[idx_Aruco[n]] = np.array([(martix[0][m[0]][m[1]]), (martix[1][m[0]][m[1]])])
+        pro_real[idx_Aruco[n]] = np.array([(transformational_matrix[0][m[0]][m[1]]), (transformational_matrix[1][m[0]][m[1]])])
     # Reading calibrated projected image coordinates
     real_dic = {} # Aruco code in the coordinates of the projected image and its corresponding id
     real_np = np.loadtxt(ph_coordinate, encoding='utf-8', dtype=float)
@@ -94,7 +94,7 @@ def predict_unknow(pro, real):
     return pro_all, real_all
 
 # One-to-one matching of projector image plane coordinates and projected image pixel coordinates
-def get_martix(pro_all, real_all, pro_size):
+def get_transformational_matrix(pro_all, real_all, pro_size):
     # Determine how points in the image plane of the projector are projected into the projected image by interpolation
     grid_x = np.linspace(0, pro_size[0]-1, pro_size[0])
     grid_y = np.linspace(0, pro_size[1]-1, pro_size[1])
@@ -112,8 +112,8 @@ def get_martix(pro_all, real_all, pro_size):
 
 # Establishing a match between projector image plane coordinates and projected image pixel coordinates
 def relation(anchors, cmr_match_pjt, ph_coordinate, pro_size, cam_size):
-    martix = pro_cam_match(cmr_match_pjt, cam_size)
-    pro, real = pro_real_match(martix, anchors, ph_coordinate)
+    transformational_matrix = pro_cam_match(cmr_match_pjt, cam_size)
+    pro, real = pro_real_match(transformational_matrix, anchors, ph_coordinate)
     pro_all, real_all = predict_unknow(pro, real)
-    mapx, mapy = get_martix(pro_all, real_all, pro_size)
+    mapx, mapy = get_transformational_matrix(pro_all, real_all, pro_size)
     return mapx, mapy
