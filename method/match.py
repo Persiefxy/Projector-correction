@@ -34,7 +34,7 @@ def pro_cam_match(cmr_match_pjt, cam_size):
     return map_matrix
 
 # Matching of the projector image plane and the calibrated points in the projected image
-def pro_real_match(transformational_matrix, anchors, ph_coordinate):
+def pro_real_match(matrix, anchors, ph_coordinate):
     cam_know = [] # The position of the Aruco code in the image plane of the camera
     idx_Aruco = [] # Aruco code number
     for key, value in anchors.items():
@@ -44,7 +44,7 @@ def pro_real_match(transformational_matrix, anchors, ph_coordinate):
     # Matching of projector image plane and projected image
     pro_real = {} # The coordinates of the pointscorresponding to the pixel points in the projector.
     for n, m in enumerate(cam_know):
-        pro_real[idx_Aruco[n]] = np.array([(transformational_matrix[0][m[0]][m[1]]), (transformational_matrix[1][m[0]][m[1]])])
+        pro_real[idx_Aruco[n]] = np.array([(matrix[0][m[0]][m[1]]), (matrix[1][m[0]][m[1]])])
     # Reading calibrated projected image coordinates
     real_dic = {} # Aruco code in the coordinates of the projected image and its corresponding id
     real_np = np.loadtxt(ph_coordinate, encoding='utf-8', dtype=float)
@@ -94,7 +94,7 @@ def predict_unknow(pro, real):
     return pro_all, real_all
 
 # One-to-one matching of projector image plane coordinates and projected image pixel coordinates
-def get_transformational_matrix(pro_all, real_all, pro_size):
+def get_matrix(pro_all, real_all, pro_size):
     # Determine how points in the image plane of the projector are projected into the projected image by interpolation
     grid_x = np.linspace(0, pro_size[0]-1, pro_size[0])
     grid_y = np.linspace(0, pro_size[1]-1, pro_size[1])
@@ -112,8 +112,8 @@ def get_transformational_matrix(pro_all, real_all, pro_size):
 
 # Establishing a match between projector image plane coordinates and projected image pixel coordinates
 def relation(anchors, cmr_match_pjt, ph_coordinate, pro_size, cam_size):
-    transformational_matrix = pro_cam_match(cmr_match_pjt, cam_size)
-    pro, real = pro_real_match(transformational_matrix, anchors, ph_coordinate)
+    matrix = pro_cam_match(cmr_match_pjt, cam_size)
+    pro, real = pro_real_match(matrix, anchors, ph_coordinate)
     pro_all, real_all = predict_unknow(pro, real)
-    mapx, mapy = get_transformational_matrix(pro_all, real_all, pro_size)
+    mapx, mapy = get_matrix(pro_all, real_all, pro_size)
     return mapx, mapy

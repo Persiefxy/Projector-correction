@@ -63,8 +63,8 @@ def matching_test(images_folder, arucodir,ph_coordinate, parameters, pro_size, c
 
 # Corrects the projected image according to the matching result
 def rendering_test(image, map_matrixs, output_dir):
-    for idx,map_transformational_matrix in enumerate(map_matrixs):
-        part = cv2.remap(image, map_transformational_matrix[0], map_transformational_matrix[1], interpolation=cv2.INTER_LINEAR)
+    for idx,map_matrix in enumerate(map_matrixs):
+        part = cv2.remap(image, map_matrix[0], map_matrix[1], interpolation=cv2.INTER_LINEAR)
         cv2.imwrite(f'{output_dir}/{idx}.png', part)
     screen=cs.Screen()
     monitors = screen.monitors
