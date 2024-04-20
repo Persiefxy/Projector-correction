@@ -5,7 +5,7 @@ pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 # 安装opencv
 pip install opencv-python==4.7.0.68
 pip install opencv-contrib-python==4.7.0.68
-pip install scipy screeninfo
+pip install scipy screeninfo pyqt5
 # 更改摄像头查找
 cv2.VideoCapture(
 linux下插入摄像头前后ls /dev/video* 看多了那个 更改设备树后可能会不一样？
@@ -31,7 +31,7 @@ def cv_imread(filePath):
     return cv_img
 
 ## 从相机读取一帧
-    ret, cam_img = cam.read()  
+    ret, cam_img = cam.read()
     if not ret:
         print('未能获取图像...')
         continue  # 如果图像读取失败，继续下一次循环
@@ -51,6 +51,9 @@ def cv_imread(filePath):
         break
 
  ## 保存图像
+        cv2.imwrite(arcuopath, img)
+        cv2.imshow("Aruco Codes", img)
+        cv2.waitKey(0)
 
         filename = f"{capture_dir}/gc_{i_code:04d}.png"
         cv2.imwrite(filename, cam_img)
