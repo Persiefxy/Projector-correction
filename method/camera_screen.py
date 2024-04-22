@@ -261,7 +261,7 @@ if __name__ == "__main__":
     brightness =100
     #注意此set会改变画面参数 需要打开windows相机才可恢复正常
     cam.get_camera_settings_ui()
-    # cam.set_camera_settings(resolution, exposure,brightness)
+    cam.set_camera_settings(resolution, exposure,brightness)
     # cam.set_camera_settings_ui()
 
 
