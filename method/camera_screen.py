@@ -11,13 +11,9 @@ class Camera:
     def __init__(self, id=0,camera_type="uvc"):
         self.camera_type = camera_type
         self.id=id
-
-    def open(self,use_dshow=True):
         if self.camera_type == "uvc":
-            if use_dshow:
-                self.cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)
-            else:
-                self.cap = cv2.VideoCapture(0)
+            self.cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)
+            # self.cap = cv2.VideoCapture(0)
             if not self.cap.isOpened():
               print("无法打开摄像头")
               exit(0)
@@ -55,41 +51,50 @@ class Camera:
             # print(f"属性名称: {prop_name}")
             # 获取属性值
 
-
         def trackbar_thread():
-            cv2.namedWindow("Camera Settings", cv2.WINDOW_NORMAL)
-            cv2.createTrackbar("Frame Width", "Camera Settings", 0, 5000, lambda x: None)
-            cv2.createTrackbar("Frame Height", "Camera Settings", 0, 5000, lambda x: None)
-            cv2.createTrackbar("Exposure", "Camera Settings", 0, 100, lambda x: None)
-            cv2.createTrackbar("ISO Speed", "Camera Settings", 0, 100, lambda x: None)
-            cv2.createTrackbar("Brightness", "Camera Settings", 0, 255, lambda x: None)
-            cv2.createTrackbar("Contrast", "Camera Settings", 0, 255, lambda x: None)
-            cv2.createTrackbar("Saturation", "Camera Settings", 0, 255, lambda x: None)
-            cv2.createTrackbar("Hue", "Camera Settings", 0, 255, lambda x: None)
-            cv2.createTrackbar("Gain", "Camera Settings", 0, 127, lambda x: None)
-            cv2.createTrackbar("Exposure Compensation", "Camera Settings", -7, -1, lambda x: None)
-            cv2.createTrackbar("White Balance", "Camera Settings", 4000, 7000, lambda x: None)
-            cv2.createTrackbar("Focus", "Camera Settings", 0, 255, lambda x: None)
+            cv2.namedWindow("GET Camera Settings", cv2.WINDOW_NORMAL)
+            # Calculate window width and height
+            window_width =200 # Divide screen width by 8
+            window_height = 600
+            # Calculate window position
+            window_x = 0  # Left edge of the screen
+            window_y = 0  # Top edge of the screen
+            # Create the window
+            # Set window position and size
+            cv2.moveWindow("GET Camera Settings", window_x, window_y)
+            cv2.resizeWindow("GET Camera Settings", window_width, window_height)
+            cv2.createTrackbar("Frame Width", "GET Camera Settings", 0, 5000, lambda x: None)
+            cv2.createTrackbar("Frame Height", "GET Camera Settings", 0, 5000, lambda x: None)
+            cv2.createTrackbar("Exposure", "GET Camera Settings", 0, 100, lambda x: None)
+            cv2.createTrackbar("ISO Speed", "GET Camera Settings", 0, 100, lambda x: None)
+            cv2.createTrackbar("Brightness", "GET Camera Settings", 0, 255, lambda x: None)
+            cv2.createTrackbar("Contrast", "GET Camera Settings", 0, 255, lambda x: None)
+            cv2.createTrackbar("Saturation", "GET Camera Settings", 0, 255, lambda x: None)
+            cv2.createTrackbar("Hue", "GET Camera Settings", 0, 255, lambda x: None)
+            cv2.createTrackbar("Gain", "GET Camera Settings", 0, 127, lambda x: None)
+            cv2.createTrackbar("Exposure Compensation", "GET Camera Settings", -7, -1, lambda x: None)
+            cv2.createTrackbar("White Balance", "GET Camera Settings", 4000, 7000, lambda x: None)
+            cv2.createTrackbar("Focus", "GET Camera Settings", 0, 255, lambda x: None)
 
             while True:
-                cv2.setTrackbarPos("Frame Width", "Camera Settings", int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH)))
-                cv2.setTrackbarPos("Frame Height", "Camera Settings", int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
-                cv2.setTrackbarPos("Exposure", "Camera Settings", int(self.cap.get(cv2.CAP_PROP_EXPOSURE)))
-                cv2.setTrackbarPos("ISO Speed", "Camera Settings", int(self.cap.get(cv2.CAP_PROP_ISO_SPEED)))
-                cv2.setTrackbarPos("Brightness", "Camera Settings", int(self.cap.get(10)))
-                cv2.setTrackbarPos("Contrast", "Camera Settings", int(self.cap.get(11)))
-                cv2.setTrackbarPos("Saturation", "Camera Settings", int(self.cap.get(12)))
-                cv2.setTrackbarPos("Hue", "Camera Settings", int(self.cap.get(13)))
-                cv2.setTrackbarPos("Gain", "Camera Settings", int(self.cap.get(14)))
-                cv2.setTrackbarPos("Exposure Compensation", "Camera Settings", int(self.cap.get(15)))
-                cv2.setTrackbarPos("White Balance", "Camera Settings", int(self.cap.get(17)))
-                cv2.setTrackbarPos("Focus", "Camera Settings", int(self.cap.get(28)))
+                cv2.setTrackbarPos("Frame Width", "GET Camera Settings", int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH)))
+                cv2.setTrackbarPos("Frame Height", "GET Camera Settings", int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
+                cv2.setTrackbarPos("Exposure", "GET Camera Settings", int(self.cap.get(cv2.CAP_PROP_EXPOSURE)))
+                cv2.setTrackbarPos("ISO Speed", "GET Camera Settings", int(self.cap.get(cv2.CAP_PROP_ISO_SPEED)))
+                cv2.setTrackbarPos("Brightness", "GET Camera Settings", int(self.cap.get(10)))
+                cv2.setTrackbarPos("Contrast", "GET Camera Settings", int(self.cap.get(11)))
+                cv2.setTrackbarPos("Saturation", "GET Camera Settings", int(self.cap.get(12)))
+                cv2.setTrackbarPos("Hue", "GET Camera Settings", int(self.cap.get(13)))
+                cv2.setTrackbarPos("Gain", "GET Camera Settings", int(self.cap.get(14)))
+                cv2.setTrackbarPos("Exposure Compensation", "GET Camera Settings", int(self.cap.get(15)))
+                cv2.setTrackbarPos("White Balance", "GET Camera Settings", int(self.cap.get(17)))
+                cv2.setTrackbarPos("Focus", "GET Camera Settings", int(self.cap.get(28)))
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break
 
         trackbar_thread = threading.Thread(target=trackbar_thread)
         trackbar_thread.start()
-    def set_camera_settings(self, resolution=(1280,720), exposure=-5, brightness=120,iso=1500,contrast=50,saturation=70,hue=13,gain=50,white_balance=6500):
+    def set_camera_settings(self, resolution=(1280,720), exposure=-5, brightness=100,iso=1500,contrast=50,saturation=70,hue=13,gain=50,white_balance=6500):
         """https://techoverflow.net/2018/12/18/how-to-set-cv2-videocapture-image-size/"""
         if self.camera_type == "uvc":
             self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, resolution[0])
@@ -107,7 +112,7 @@ class Camera:
             #https://docs.opencv.org/4.x/d4/d15/group__videoio__flags__base.html
         else:
             raise ValueError("Getting camera settings is not supported for this camera type")
-    def set_camera_settings_ui(self,cswn="Camera Settings"):#     使用 OpenCV trackbars 设置摄像头参数
+    def set_camera_settings_ui(self,cswn="Set Camera"):#     使用 OpenCV trackbars 设置摄像头参数
 
         def nothing(x):
             pass
@@ -166,16 +171,16 @@ class Camera:
         trackbar_thread = threading.Thread(target=trackbar_thread)
         trackbar_thread.start()
 
-    def read(self,preview=False):
-        if not hasattr(self, 'cap'):
-            self.open()
+    def read(self,ispreview="no"):
         if self.camera_type == "uvc":
             ret, frame = self.cap.read()
-            if preview:
-                cv2.imshow('Preview', frame)
-                if cv2.waitKey(1) & 0xFF == ord('q'):
-                    self.preview = False
-            return ret,frame
+            if ispreview=="preview":
+                cv2.imshow('This is a picture taken by myCamera just now', frame)
+                # key = cv2.waitKey(0)#等待0ms读入键盘
+                # if key & 0xFF == ord('q'):
+                #     preview = False
+                #     cv2.destroyWindow("This is a picture taken by myCamera just now")
+        return ret,frame
 
 
 
@@ -247,24 +252,24 @@ class Screen:
 
 
 if __name__ == "__main__":
-    screen = Screen()
-    print(screen.guiselect())
-    camera = Camera("uvc")
-    resolution = (800,700)
+    # screen = Screen()
+    # print(screen.guiselect())
+    cam = Camera("uvc")
+    cam.read("preview")
+    resolution = (1200,700)
     exposure = -5
     brightness =100
     #注意此set会改变画面参数 需要打开windows相机才可恢复正常
-    camera.open()
-    camera.get_camera_settings_ui()
-    camera.set_camera_settings(resolution, exposure,brightness)
-    camera.set_camera_settings_ui()
-    #screen.cv_move_window("Camera Settings",(300,700))
+    cam.get_camera_settings_ui()
+    # cam.set_camera_settings(resolution, exposure,brightness)
+    # cam.set_camera_settings_ui()
+
 
     while True:
-        ret,frame = camera.read()
+        ret,frame = cam.read()
         if ret:
             cv2.imshow("Image", frame)
         # 等待按键按下
-        key = cv2.waitKey(1) & 0xFF
+        key = cv2.waitKey(100) & 0xFF
         if key == ord('q'):
             break

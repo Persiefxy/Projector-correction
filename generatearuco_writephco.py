@@ -32,23 +32,31 @@ for key, data in anchors.items():
 myscreen=cs.Screen()
 myscreen.guiselect()
 width, height = myscreen.width, myscreen.height
-myscreen.cv_create_window("ARTag",0,True)
+myscreen = myscreen.monitors[myscreen.id]
+cv2.namedWindow("ARTag", cv2.WND_PROP_FULLSCREEN)
+cv2.setWindowProperty("ARTag", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 cv2.imshow('ARTag', generated_aruco_img)
 cv2.imwrite("./data/aruco15.png", generated_aruco_img)
 
-cv2.waitKey(0)
 #调用摄像头
 cam = cs.Camera()
-# cam.set_camera_settings((1280,720))
-ret, cam_img = cam.read()  # 从相机读取一帧
+cam.set_camera_settings((1280,720))
+
+ret, cam_img = cam.read("preview")  # 从相机读取一帧
 if not ret:
     print('未能获取图像...')
 
-preview = cv2.resize(cam_img, (0, 0), fx=0.5, fy=0.5)
-filename = r"./data/aruco_new.png"
+# preview = cv2.resize(cam_img, (0, 0), fx=0.5, fy=0.5)
+filename = "./data/aruco_new.png"
 cv2.imwrite(filename, cam_img)
+
 
 with open(r'./data/phco.txt','w') as f:
     for i,it in enumerate(re):
         f.write(str(i)+" "+str(int(it[0]))+" "+str(int(it[1])))
         f.write("\n")
+while True:
+    key = cv2.waitKey(100) & 0xFF
+    if key == ord('r'):
+        print("拍摄")
+        break
