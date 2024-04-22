@@ -1,6 +1,9 @@
 import os
 import cv2, numpy as np
 import  screeninfo
+
+import time
+
 import win32api
 import win32con
 import datetime
@@ -12,8 +15,8 @@ import method.camera_screen as cs
 pattern_size = (640,360)
 num_grids = (4, 4)
 view_id = 0
-pattern_dir = f'data/240415/patterns_2'
-capture_dir = f'./data/240415/captured/position_{view_id:02d}a'
+pattern_dir = f'data/240422/patterns_2'
+capture_dir =  f'./data/{date_str}/captured/position_{time_str}/'
 os.makedirs(pattern_dir, exist_ok=True)
 os.makedirs(capture_dir, exist_ok=True)
 
@@ -76,21 +79,24 @@ def change_screen_resolution(width, height):
 
 #change_screen_resolution(640,360 )
 screen=cs.Screen()
+screen.guiselect()
 monitors = screen.monitors
-screen = monitors[screen.guiselect()]
+screen = monitors[screen.id]
 width, height = screen.width, screen.height
-# cv2.namedWindow("GrayCode", cv2.WND_PROP_FULLSCREEN)
-# cv2.moveWindow("GrayCode", screen.x - 1, screen.y - 1)
-# cv2.setWindowProperty("GrayCode", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+cv2.namedWindow("GrayCode", cv2.WND_PROP_FULLSCREEN)
+cv2.moveWindow("GrayCode", screen.x - 1, screen.y - 1)
+cv2.setWindowProperty("GrayCode", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 cv2.imshow('GrayCode', grid_img)
 #cv2.waitKey(0)
 capture_mode = False
 
 # 初始化相机
-# cam = cv2.VideoCapture(0)  # 假设0是相机的索引，根据实际情况调整
-# cam.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-# cam.set(cv2.CAP_PROP_FRAME_HEIGHT,720)
-cam=cs.Camera("uvc")
+cam = cv2.VideoCapture(0)  # 假设0是相机的索引，根据实际情况调整
+cam.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+cam.set(cv2.CAP_PROP_FRAME_HEIGHT,720)
+
+# cam=cs.Camera("uvc")
+# cam.open()
 # 主循环
 while True:
     ret, cam_img = cam.read()  # 从相机读取一帧
@@ -101,18 +107,21 @@ while True:
     # 对读取到的图像进行缩放，显示预览
     preview = cv2.resize(cam_img, (0, 0), fx=0.5, fy=0.5)
     cv2.imshow("Preview", preview)
-    key = cv2.waitKey(1) & 0xFF
+    input_str = input("Press 'y' to continue: ")
+    while input_str != 'y':
+        input_str = input("Press 'y' to continue: ")
 
     # 按空格键保存图像
-    if key == 32:
+    if input_str == "y":
         i_code = 0
         cv2.imshow('GrayCode', pattern_images[i_code])
-        cv2.waitKey(500)
+        time.sleep(0.5)
+
+
+
         capture_mode = True
         continue
-    # 按ESC键退出
-    elif key == 27:
-        break
+
     if capture_mode:
         # 保存图像
         filename = f"{capture_dir}/gc_{i_code:04d}.png"
@@ -122,7 +131,8 @@ while True:
         if i_code >= len(pattern_images):
             break
         cv2.imshow('GrayCode', pattern_images[i_code])
-        cv2.waitKey(500)
+        time.sleep(0.5)
+
 
 # 释放相机资源并关闭所有OpenCV窗口
 cam.release()

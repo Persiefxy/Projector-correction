@@ -115,9 +115,9 @@ class Camera:
       # 创建一个名为 camsettingwindowsname 的窗口
         cv2.namedWindow(cswn)
         cv2.namedWindow(cswn, cv2.WINDOW_NORMAL)
-        
+
         # 获取当前摄像头的参数值
-  
+
         # 创建 trackbars 用于调整增益、曝光补偿、白平衡和对焦等
         cv2.createTrackbar("Gain", cswn, 0, 100, nothing)
         cv2.createTrackbar("White Balance", cswn, 4000, 7000, nothing)
@@ -129,7 +129,7 @@ class Camera:
         cv2.createTrackbar("Contrast", cswn, 0, 255, lambda x: None)
         cv2.createTrackbar("Saturation", cswn, 0, 255, lambda x: None)
         cv2.createTrackbar("Hue", cswn, 0, 255, lambda x: None)
-        
+
         cv2.setTrackbarPos("Gain", cswn, int(self.cap.get(14)))
         cv2.setTrackbarPos("White Balance", cswn, int(self.cap.get(17)))
         cv2.setTrackbarPos("Frame Width", cswn, int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH)))
@@ -221,13 +221,16 @@ class Screen:
         app.exec_()
         if screen_selected:
             self.id=selected_screen_id
+            self.width=self.monitors[selected_screen_id].width
+            self.height=self.monitors[selected_screen_id].height
             return selected_screen_id
         return 0
 
-    def cv_move_window(self, windowname, resizewindowsize=None, fullscreen=False, id=None):
+    def cv_create_window(self, windowname, resizewindowsize=None, fullscreen=False, id=None):
         if id is None:
             id = self.id
         # 控制窗口显示
+        cv2.namedWindow(windowname, cv2.WND_PROP_FULLSCREEN)
         screen = self.monitors[id]
         width, height = screen.width, screen.height
         if fullscreen:
@@ -252,10 +255,11 @@ if __name__ == "__main__":
     brightness =100
     #注意此set会改变画面参数 需要打开windows相机才可恢复正常
     camera.open()
+    camera.get_camera_settings_ui()
     camera.set_camera_settings(resolution, exposure,brightness)
     camera.set_camera_settings_ui()
     #screen.cv_move_window("Camera Settings",(300,700))
-    
+
     while True:
         ret,frame = camera.read()
         if ret:

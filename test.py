@@ -40,7 +40,12 @@ def Aruco_detect(gray):
 
     print('result is :',result)
     return result
-
+def myanchors(fourpointpath=""):#定义一个函数返回aruco标记中心点
+    aruco=[]
+    real_np = np.loadtxt(fourpointpath, encoding='utf-8', dtype=float)
+    for i in real_np:
+        aruco[i[0]] = [i[1], i[2]]
+    return aruco
 # Load captured Gray code image for decoding
 def load_images_from_folder(folder):
     images = []
@@ -51,11 +56,14 @@ def load_images_from_folder(folder):
     return images
 
 # Complete matching of projected image pixel coordinates to projector pixel coordinates
-def matching_test(images_folder, arucodir,ph_coordinate, parameters, pro_size, cam_size):
+def matching_test(images_folder, arucodir,ph_coordinate, parameters, pro_size, cam_size,type="aruco"):
     images_list = load_images_from_folder(images_folder)
     cmr_match_pjt = gray_decode(images_list,pro_size,parameters)
     img = cv2.imread(arucodir)
-    anchors = Aruco_detect(img)
+    if type == "aruco":
+        anchors = Aruco_detect(img)
+    else:
+        anchors=myanchors()
     map_x, map_y = relation(anchors, cmr_match_pjt, ph_coordinate, pro_size, cam_size)
     map_x, map_y = map_x.reshape(1, -1, map_x.shape[0], map_x.shape[1]), map_y.reshape(1, -1, map_x.shape[0], map_x.shape[1])
     map_matrix = np.concatenate((map_x, map_y), axis=1)
@@ -120,3 +128,4 @@ if __name__ == '__main__':
         image = cv2.imread(args.test_image)
         matricies = np.load(args.match_np)
         rendering_test(image, matricies, args.output_dir)
+

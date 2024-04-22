@@ -30,14 +30,12 @@ for key, data in anchors.items():
     re.append(data)
 #调用投影仪
 myscreen=cs.Screen()
-monitors = myscreen.monitors
-myscreen = monitors[myscreen.guiselect()]
+myscreen.guiselect()
 width, height = myscreen.width, myscreen.height
-
-cv2.namedWindow("ARTag", cv2.WND_PROP_FULLSCREEN)
-cv2.moveWindow("ARTag", myscreen.x - 1, myscreen.y - 1)
-cv2.setWindowProperty("ARTag", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+myscreen.cv_create_window("ARTag",0,True)
 cv2.imshow('ARTag', generated_aruco_img)
+cv2.imwrite("./data/aruco15.png", generated_aruco_img)
+
 cv2.waitKey(0)
 #调用摄像头
 cam = cs.Camera()
@@ -49,7 +47,6 @@ if not ret:
 preview = cv2.resize(cam_img, (0, 0), fx=0.5, fy=0.5)
 filename = r"./data/aruco_new.png"
 cv2.imwrite(filename, cam_img)
-
 
 with open(r'./data/phco.txt','w') as f:
     for i,it in enumerate(re):
