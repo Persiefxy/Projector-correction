@@ -74,9 +74,12 @@ def rendering_test(image, map_matrixs, output_dir):
     for idx,map_matrix in enumerate(map_matrixs):
         part = cv2.remap(image, map_matrix[0], map_matrix[1], interpolation=cv2.INTER_LINEAR)
         cv2.imwrite(f'{output_dir}/{idx}.png', part)
-    screen=cs.Screen()
-    monitors = screen.monitors
-    screen = monitors[screen.guiselect()]
+    #调用投影仪
+    monitors = screeninfo.get_monitors()
+    for i,monitor in enumerate(monitors):
+        print(f"{monitor.name} - Resolution: {monitor.width}x{monitor.height} - ID: {i}" )
+    screen = monitors[int(input("Enter monitor number: "))]
+    width, height = screen.width, screen.height
     cv2.namedWindow("result", cv2.WND_PROP_FULLSCREEN)
     cv2.moveWindow("result", screen.x - 1, screen.y - 1)
     cv2.setWindowProperty("result", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)

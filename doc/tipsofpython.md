@@ -75,3 +75,11 @@ cv2.namedWindow("GrayCode", cv2.WND_PROP_FULLSCREEN)
 cv2.moveWindow("GrayCode", screen.x - 1, screen.y - 1)
 cv2.setWindowProperty("GrayCode", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 cv2.imshow('GrayCode', grid_img)
+
+
+#调用投影仪
+monitors = screeninfo.get_monitors()
+for i,monitor in enumerate(monitors):
+    print(f"{monitor.name} - Resolution: {monitor.width}x{monitor.height} - ID: {i}" )
+screen = monitors[int(input("Enter monitor number: "))]
+width, height = screen.width, screen.height

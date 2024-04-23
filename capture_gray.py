@@ -61,10 +61,11 @@ for idx, img in enumerate(pattern_images):
 
 print(f'Generated {len(pattern_images)} images')
 grid_img = create_preview(num_grids, (pattern_size[0] // num_grids[0], pattern_size[1] // num_grids[1]), view_id)
-#控制显示屏幕
-
+#调用投影仪
 monitors = screeninfo.get_monitors()
-screen = monitors[cs.screenguiselect]
+for i,monitor in enumerate(monitors):
+    print(f"{monitor.name} - Resolution: {monitor.width}x{monitor.height} - ID: {i}" )
+screen = monitors[int(input("Enter monitor number: "))]
 width, height = screen.width, screen.height
 cv2.namedWindow("GrayCode", cv2.WND_PROP_FULLSCREEN)
 cv2.moveWindow("GrayCode", screen.x - 1, screen.y - 1)
@@ -73,12 +74,12 @@ cv2.imshow('GrayCode', grid_img)
 #cv2.waitKey(0)
 capture_mode = False
 
-# 初始化相机
-cam = cv2.VideoCapture(0,cv2.CAP_DSHOW)  # 假设0是相机的索引，根据实际情况调整
+# 初始化相机,cv2.CAP_DSHOW
+cam = cv2.VideoCapture(0)  # 假设0是相机的索引，根据实际情况调整
 cam.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
 cam.set(cv2.CAP_PROP_FRAME_HEIGHT,720)
-cam.set(cv2.CAP_PROP_EXPOSURE, -5)
-cam.set(10, 100) # brightness     min: 0   , max: 255 , increment:1
+cam.set(cv2.CAP_PROP_EXPOSURE, -3)
+cam.set(10, 120) # brightness     min: 0   , max: 255 , increment:1
 
 # 主循环
 while True:
@@ -96,7 +97,7 @@ while True:
     if key == 32:
         i_code = 0
         cv2.imshow('GrayCode', pattern_images[i_code])
-        cv2.waitKey(500)
+        cv2.waitKey(800)
         capture_mode = True
         continue
     # 按ESC键退出
@@ -111,7 +112,7 @@ while True:
         if i_code >= len(pattern_images):
             break
         cv2.imshow('GrayCode', pattern_images[i_code])
-        cv2.waitKey(500)
+        cv2.waitKey(800)
 
 # 释放相机资源并关闭所有OpenCV窗口
 cam.release()
