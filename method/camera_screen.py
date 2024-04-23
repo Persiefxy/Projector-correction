@@ -198,56 +198,55 @@ class Image:
         cv2.imshow("Image", self.frame)
 
 
-class Screen:
-    # 调用投影仪
-    def __init__(self):
-        self.monitors = screeninfo.get_monitors()
-    def guiselect(self):
-        screen_selected = False
-        selected_screen_id=0
-        def onButtonClicked():
-            nonlocal screen_selected,selected_screen_id
-            screen_selected= True
-            selected_screen_id = combo.currentIndex()
-            app.quit()
-        app = QApplication(sys.argv)
-        window = QWidget()
-        window.setWindowTitle('Select Screen')
-        options = [f"{monitor.name} - Resolution: {monitor.width}x{monitor.height} - ID: {i}" for i,monitor in enumerate(self.monitors)]
-        combo = QComboBox(window)
-        combo.addItems(options)
-        combo.setCurrentIndex(0)
-        button = QPushButton('Select', window)
-        button.clicked.connect(onButtonClicked)
-        combo.move(50, 50)
-        button.move(450, 50)
-        window.setGeometry(100, 100, 600, 200)
-        window.show()
-        app.exec_()
-        if screen_selected:
-            self.id=selected_screen_id
-            self.width=self.monitors[selected_screen_id].width
-            self.height=self.monitors[selected_screen_id].height
-            return selected_screen_id
-        return 0
 
-    def cv_create_window(self, windowname, resizewindowsize=None, fullscreen=False, id=None):
-        if id is None:
-            id = self.id
-        # 控制窗口显示
-        cv2.namedWindow(windowname, cv2.WND_PROP_FULLSCREEN)
-        screen = self.monitors[id]
-        width, height = screen.width, screen.height
-        if fullscreen:
-            cv2.namedWindow(windowname, cv2.WND_PROP_FULLSCREEN)
-            #cv2.setWindowProperty(windowname, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
-            cv2.moveWindow(windowname, screen.x - 1, screen.y - 1)  # 为了确保窗口不会被放置在屏幕的边缘之外，会在指定的坐标上减去一个像素。这样可以确保窗口不会被裁剪或部分显示在屏幕边缘之外。
-        elif resizewindowsize is not None:
-            cv2.resizeWindow(windowname, resizewindowsize[0], resizewindowsize[1])
-            cv2.moveWindow(windowname, screen.x + width // 4, screen.y + height // 4)
+def screenguiselect():
+    monitors = screeninfo.get_monitors()
+    screen_selected = False
+    selected_screen_id=0
+    def onButtonClicked():
+        nonlocal screen_selected,selected_screen_id
+        screen_selected= True
+        selected_screen_id = combo.currentIndex()
+        
 
-    def show_image(self, windowname,img):
-        cv2.imshow(windowname, img)
+        # app.quit()
+    app = QApplication(sys.argv)
+    window = QWidget()
+    window.setWindowTitle('Select Screen')
+    options = [f"{monitor.name} - Resolution: {monitor.width}x{monitor.height} - ID: {i}" for i,monitor in enumerate(monitors)]
+    combo = QComboBox(window)
+    combo.addItems(options)
+    combo.setCurrentIndex(0)
+    button = QPushButton('Select', window)
+    button.clicked.connect(onButtonClicked)
+    combo.move(50, 50)
+    button.move(450, 50)
+    window.setGeometry(100, 100, 600, 200)
+    window.show()
+    app.exec_()
+    if screen_selected:
+        window.close()
+        return selected_screen_id
+
+    return 0
+
+    # def cv_create_window(self, windowname, resizewindowsize=None, fullscreen=False, id=None):
+    #     if id is None:
+    #         id = self.id
+    #     # 控制窗口显示
+    #     cv2.namedWindow(windowname, cv2.WND_PROP_FULLSCREEN)
+    #     screen = self.monitors[id]
+    #     width, height = screen.width, screen.height
+    #     if fullscreen:
+    #         cv2.namedWindow(windowname, cv2.WND_PROP_FULLSCREEN)
+    #         #cv2.setWindowProperty(windowname, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+    #         cv2.moveWindow(windowname, screen.x - 1, screen.y - 1)  # 为了确保窗口不会被放置在屏幕的边缘之外，会在指定的坐标上减去一个像素。这样可以确保窗口不会被裁剪或部分显示在屏幕边缘之外。
+    #     elif resizewindowsize is not None:
+    #         cv2.resizeWindow(windowname, resizewindowsize[0], resizewindowsize[1])
+    #         cv2.moveWindow(windowname, screen.x + width // 4, screen.y + height // 4)
+
+    # def show_image(self, windowname,img):
+    #     cv2.imshow(windowname, img)
 
 
 

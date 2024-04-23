@@ -17,7 +17,3 @@ filename = "./data/aruco_new.png"
 cv2.imwrite(filename, cam_img)
 
 
-with open(r'./data/phco.txt','w') as f:
-    for i,it in enumerate(re):
-        f.write(str(i)+" "+str(int(it[0]))+" "+str(int(it[1])))
-        f.write("\n")

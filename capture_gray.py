@@ -1,8 +1,6 @@
 import os
 import cv2, numpy as np
 import  screeninfo
-import win32api
-import win32con
 import datetime
 now = datetime.datetime.now()
 date_str = now.strftime("%m%d")
@@ -12,10 +10,12 @@ import method.camera_screen as cs
 pattern_size = (640,360)
 num_grids = (4, 4)
 view_id = 0
-pattern_dir = f'data/240415/patterns_2'
-capture_dir = f'./data/240415/captured/position_{view_id:02d}a'
-os.makedirs(pattern_dir, exist_ok=True)
-os.makedirs(capture_dir, exist_ok=True)
+pattern_dir = f'data/240422/patterns_2'
+
+capture_dir = f'data/{date_str}{time_str}/captured/position_00/'
+if not os.path.exists(capture_dir):
+    os.makedirs(capture_dir)
+
 
 def create_preview(pattern_size, grid_size, view_id):
     print(pattern_size)
@@ -62,22 +62,9 @@ for idx, img in enumerate(pattern_images):
 print(f'Generated {len(pattern_images)} images')
 grid_img = create_preview(num_grids, (pattern_size[0] // num_grids[0], pattern_size[1] // num_grids[1]), view_id)
 #控制显示屏幕
-def change_screen_resolution(width, height):
-    # 获取当前显示器设备上下文
-    device_context = win32api.EnumDisplayDevices()
-    device_name = device_context.DeviceName
-    # 新的分辨率设置
-    mode = win32api.EnumDisplaySettings(device_name, win32con.ENUM_CURRENT_SETTINGS)
-    mode.PelsWidth = width
-    mode.PelsHeight = height
-    # 改变分辨率
-    win32api.ChangeDisplaySettings(mode, 0)
 
-
-#change_screen_resolution(640,360 )
-screen=cs.Screen()
-monitors = screen.monitors
-screen = monitors[screen.guiselect()]
+monitors = screeninfo.get_monitors()
+screen = monitors[cs.screenguiselect]
 width, height = screen.width, screen.height
 cv2.namedWindow("GrayCode", cv2.WND_PROP_FULLSCREEN)
 cv2.moveWindow("GrayCode", screen.x - 1, screen.y - 1)
@@ -87,11 +74,11 @@ cv2.imshow('GrayCode', grid_img)
 capture_mode = False
 
 # 初始化相机
-cam = cv2.VideoCapture(0)  # 假设0是相机的索引，根据实际情况调整
+cam = cv2.VideoCapture(0,cv2.CAP_DSHOW)  # 假设0是相机的索引，根据实际情况调整
 cam.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
 cam.set(cv2.CAP_PROP_FRAME_HEIGHT,720)
 cam.set(cv2.CAP_PROP_EXPOSURE, -5)
-cam.cap.set(10, 100) # brightness     min: 0   , max: 255 , increment:1
+cam.set(10, 100) # brightness     min: 0   , max: 255 , increment:1
 
 # 主循环
 while True:

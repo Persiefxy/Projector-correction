@@ -1,4 +1,5 @@
 import os
+import  screeninfo
 import cv2
 import numpy as np
 import method.camera_screen as cs
@@ -29,15 +30,21 @@ re=[]
 for key, data in anchors.items():
     re.append(data)
 #调用投影仪
-myscreen=cs.Screen()
-myscreen.guiselect()
-width, height = myscreen.width, myscreen.height
-myscreen = myscreen.monitors[myscreen.id]
+monitors = screeninfo.get_monitors()
+for i,monitor in enumerate(monitors):
+    print(f"{monitor.name} - Resolution: {monitor.width}x{monitor.height} - ID: {i}" )
+screen = monitors[int(input("Enter monitor number: "))]
+width, height = screen.width, screen.height
 cv2.namedWindow("ARTag", cv2.WND_PROP_FULLSCREEN)
+cv2.moveWindow("ARTag", screen.x - 1, screen.y - 1)
 cv2.setWindowProperty("ARTag", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 cv2.imshow('ARTag', generated_aruco_img)
 cv2.imwrite("./data/aruco15.png", generated_aruco_img)
-
+while True:
+    key = cv2.waitKey(0) & 0xFF
+    if key == ord('r'):
+        print("拍摄")
+        break
 #调用摄像头
 cam = cs.Camera()
 cam.set_camera_settings((1280,720))
@@ -55,8 +62,3 @@ with open(r'./data/phco.txt','w') as f:
     for i,it in enumerate(re):
         f.write(str(i)+" "+str(int(it[0]))+" "+str(int(it[1])))
         f.write("\n")
-while True:
-    key = cv2.waitKey(100) & 0xFF
-    if key == ord('r'):
-        print("拍摄")
-        break
