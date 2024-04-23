@@ -7,7 +7,7 @@ date_str = now.strftime("%m%d")
 time_str = now.strftime("%H%M")
 import method.camera_screen as cs
 #pattern_size = (1280, 720)
-pattern_size = (640,360)
+pattern_size = (1280,852) #(640,360)
 num_grids = (4, 4)
 view_id = 0
 pattern_dir = f'data/240422/patterns_2'

@@ -31,7 +31,7 @@ corners,ids,anchors=aruco1.generate_corners_anchors()
 re=[]
 for key, data in anchors.items():
     re.append(data)
-width, height =  (1920, 1100) 
+width, height =  (1200, 600) 
 def display1():
     #调用投影仪
     monitors = screeninfo.get_monitors()

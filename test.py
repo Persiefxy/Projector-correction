@@ -94,9 +94,11 @@ def rendering_test(image, map_matrixs, output_dir):
     cv2.destroyAllWindows()
 
 if __name__ == '__main__':
-    pro_size = (640, 360) # Projector image plane size
+    pro_size = (1280,852)  # Projector image plane size 2560*640/3840)
+    
+    
     cam_size  =(1280, 720) # Camera image plane size
-    arucodir='./data/aruco2.png'
+    arucodir='C:/Users/robert/source/repos/3BPM/test3\WindowsFormsApp1/bin/Debug/net6.0-windows10.0.17763.0/pic2.png'
     parser = argparse.ArgumentParser(
     description='Projector correction')
     parser.add_argument('--shadow_thresh', type=int, default=80,
@@ -109,12 +111,12 @@ if __name__ == '__main__':
                         help='1. matching, 2. rendering')
     parser.add_argument('--ph_coordinate', type=str, default = './data/phco.txt',
                         help='Projection image coordinates, eg: "./ph_coordinate.txt"')
-    parser.add_argument('--gray_folder', type=str,default=r"data\240415\captured\position_00a"
+    parser.add_argument('--gray_folder', type=str,default=r"data\04232022\captured\position_00"
                         #default = f'./data/{date_str}/captured/position_{time_str}/'
                         ,help='The folder where Gray codes are stored')
     parser.add_argument('--match_np', type=str, default = "./result/match.npy",
                         help='The file name where the matching results are stored, eg: "./match.npy"')
-    parser.add_argument('--test_image', type=str, default = "./pic.png",
+    parser.add_argument('--test_image', type=str, default = "./picc.png",
                         help='Test image, eg: "./test.png"')
     parser.add_argument('--output_dir', type=str, default = "./result/",
                         help='output image folder, eg: "./result/"')
