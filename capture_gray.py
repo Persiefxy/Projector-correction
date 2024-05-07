@@ -6,13 +6,15 @@ now = datetime.datetime.now()
 date_str = now.strftime("%m%d")
 time_str = now.strftime("%H%M")
 import method.camera_screen as cs
-#pattern_size = (1280, 720)
-pattern_size = (1280,852) #(640,360)
+cam_size = (1280, 720)
+pattern_size = (1280,720) #(640,360)
 num_grids = (4, 4)
 view_id = 0
-pattern_dir = f'data/240422/patterns_2'
-
+pattern_dir = f'data/{date_str}/patterns_2'
 capture_dir = f'data/{date_str}{time_str}/captured/position_00/'
+log_file = os.path.join(pattern_dir, 'log.txt')
+if not os.path.exists(pattern_dir):
+    os.makedirs(pattern_dir)
 if not os.path.exists(capture_dir):
     os.makedirs(capture_dir)
 
@@ -65,7 +67,19 @@ grid_img = create_preview(num_grids, (pattern_size[0] // num_grids[0], pattern_s
 monitors = screeninfo.get_monitors()
 for i,monitor in enumerate(monitors):
     print(f"{monitor.name} - Resolution: {monitor.width}x{monitor.height} - ID: {i}" )
-screen = monitors[int(input("Enter monitor number: "))]
+id=int(input("Enter monitor number: "))
+screen = monitors[id]
+black_screen = np.zeros((100, 100, 3), dtype='uint8')
+black_screens = []
+for i,monitor in enumerate(monitors):
+    if i is not id:
+        black_screens.append(monitor)
+with open(log_file, 'w') as f:
+    #print('拍摄文件夹%r'%capture_dir, file=f)
+    print(f"屏幕：{screen.name} - Resolution: {screen.width}x{screen.height} - 时间: {time_str}", file=f)
+    print(f"拍摄文件夹：{capture_dir}", file=f)
+    print(f"cam大小：{cam_size} bytes", file=f)
+    print(f"cam大小：{cam_size} bytes", file=f)
 width, height = screen.width, screen.height
 cv2.namedWindow("GrayCode", cv2.WND_PROP_FULLSCREEN)
 cv2.moveWindow("GrayCode", screen.x - 1, screen.y - 1)
@@ -75,11 +89,11 @@ cv2.imshow('GrayCode', grid_img)
 capture_mode = False
 
 # 初始化相机,cv2.CAP_DSHOW
-cam = cv2.VideoCapture(0)  # 假设0是相机的索引，根据实际情况调整
-cam.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-cam.set(cv2.CAP_PROP_FRAME_HEIGHT,720)
-cam.set(cv2.CAP_PROP_EXPOSURE, -3)
-cam.set(10, 120) # brightness     min: 0   , max: 255 , increment:1
+cam = cv2.VideoCapture(0) # 假设0是相机的索引，根据实际情况调整
+cam.set(cv2.CAP_PROP_FRAME_WIDTH, cam_size[0])
+cam.set(cv2.CAP_PROP_FRAME_HEIGHT,cam_size[1])
+cam.set(cv2.CAP_PROP_EXPOSURE, -7)
+cam.set(10, 100) # brightness     min: 0   , max: 255 , increment:1
 
 # 主循环
 while True:
