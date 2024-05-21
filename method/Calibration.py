@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 # import sys,os  # Import sys module for path manipulation
 # sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
-from . import camera_screen as cs
+import camera_screen as cs
 def dict1(): #为了适配之前的aruco数据而妥协的一个转置
     aruco_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
     myByteList = []
@@ -97,8 +97,8 @@ class Chess(PatternMarker):
         markerSeparation (float): 图案标记之间的间距。
     """
 
-    def __init__(self, markersX, markersY, markerLength, margins):
-        super().__init__(markersX, markersY, markerLength,0, margins)
+    def __init__(self, pattern_size, square_size):
+        super().__init__(pattern_size[0], pattern_size[1], square_size,0, 0)
         #self.markerSeparation = 0  # 棋盘格图案标记没有边缘空白区域
 
     def get_marker_corners(self, markerX, markerY):
@@ -125,8 +125,10 @@ class Chess(PatternMarker):
                 if (i // (self.markerLength )) % 2 == (j // (self.markerLength )) % 2:
                     chessboard[i:i + self.markerLength, j:j + self.markerLength] = 255
         #cv2.imwrite(chesspath, chessboard)
-        cv2.imshow("Chessboard", chessboard)
-        cv2.waitKey(0)
+        # cv2.imshow("Chessboard", chessboard)
+        # cv2.waitKey(0)
+        return chessboard
+
 
     def find_corners_sb(self,img,pattern_size):
         """
@@ -238,7 +240,25 @@ class Aruco(PatternMarker):
                 anchors[marker_id]=marker_anchors
         return corners,ids,anchors
 
+class dotmatrix(PatternMarker):
+    def generate_dot_matrix(self, dot_size=10, dot_color=(255, 255, 255)):
+        """
+        生成点阵图像。
 
+        Args:
+            dot_size (int): 每个点的大小（像素）。
+            dot_color (tuple): 点的颜色，格式为(R, G, B)。
+
+        Returns:
+            numpy.ndarray: 生成的点阵图像。
+        """
+        # 创建一个黑色背景的图像
+        dot_matrix = np.zeros((self.height, self.width, 3), dtype=np.uint8)
+        # 在图像上绘制点阵
+        for y in range(0, self.markersY, dot_size * 2):
+            for x in range(0, self.markersX, dot_size * 2):
+                dot_matrix[y:y+dot_size, x:x+dot_size] = dot_color
+        return dot_matrix
 
 
 if __name__ == '__main__':

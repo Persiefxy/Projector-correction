@@ -104,3 +104,11 @@ class Stitcher:
 
         # 返回可视化结果
         return vis
+    def points_transform(self,points, matrix):
+    # Convert points to homogeneous coordinates 输入N,2维矩阵 和3x3投影矩阵
+        p1 = np.hstack([points, np.ones((len(points), 1))])
+        # Apply the transformation matrix
+        tp = p1.dot(matrix.T)
+        # Convert back to Cartesian coordinates
+        transformed_points_cartesian = tp[:, :2] / tp[:, [2]]
+        return transformed_points_cartesian

@@ -6,7 +6,7 @@ now = datetime.datetime.now()
 date_str = now.strftime("%m%d")
 time_str = now.strftime("%H%M")
 import method.camera_screen as cs
-cam_size = (1280, 720)
+cam_size = (1920, 1080)
 pattern_size = (1280,720) #(640,360)
 num_grids = (4, 4)
 view_id = 0

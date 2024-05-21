@@ -70,40 +70,41 @@ def matching_test(images_folder, arucodir,ph_coordinate, parameters, pro_size, c
     return map_matrix
 
 # Corrects the projected image according to the matching result
-def rendering_test(image, map_matrixs, output_dir):
-    for idx,map_matrix in enumerate(map_matrixs):
-        part = cv2.remap(image, map_matrix[0], map_matrix[1], interpolation=cv2.INTER_LINEAR)
-        cv2.imwrite(f'{output_dir}/{idx}.png', part)
-    #调用投影仪
+def rendering_test(image, map_matrix, output_dir):
     monitors = screeninfo.get_monitors()
+
+    #调用投影仪
     for i,monitor in enumerate(monitors):
         print(f"{monitor.name} - Resolution: {monitor.width}x{monitor.height} - ID: {i}" )
-    screen = monitors[int(input("Enter monitor number: "))]
+    a=int(input("Enter monitor number: "))
+    screen = monitors[a]
+    map_matrix=map_matrix[0]
+    part = cv2.remap(image, map_matrix[0], map_matrix[1], interpolation=cv2.INTER_LINEAR)
+    cv2.imwrite(f'{output_dir}/{a}.png', part)
+
     width, height = screen.width, screen.height
     cv2.namedWindow("result", cv2.WND_PROP_FULLSCREEN)
     cv2.moveWindow("result", screen.x - 1, screen.y - 1)
     cv2.setWindowProperty("result", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
-    img = cv2.imread(f'{output_dir}/0.png')
-    cv2.imshow('result', img)
-    # while True:
-    #     if cv2.waitKey(1) & 0xFF == ord(' '):
-    #         break
-    cv2.waitKey(0)
+    img = cv2.imread(f'{output_dir}/{a}.png')
     cv2.imshow('result', image)
+
+    cv2.waitKey(0)
+    cv2.imshow('result', img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
 if __name__ == '__main__':
-    pro_size = (1280,852)  # Projector image plane size 2560*640/3840)
+    pro_size = (1280,720)  # Projector image plane size 2560*640/3840)
     
     
-    cam_size  =(1280, 720) # Camera image plane size
-    arucodir='C:/Users/robert/source/repos/3BPM/test3\WindowsFormsApp1/bin/Debug/net6.0-windows10.0.17763.0/pic2.png'
+    cam_size  =(1920, 1080) # Camera image plane size
+    arucodir=r'C:\Users\Administrator\Desktop\testapp\pic2.png'
     parser = argparse.ArgumentParser(
     description='Projector correction')
-    parser.add_argument('--shadow_thresh', type=int, default=80,
+    parser.add_argument('--shadow_thresh', type=int, default=10,
                         help='The threshold of the shadow mask')
-    parser.add_argument('--code_thresh', type=int, default=40,
+    parser.add_argument('--code_thresh', type=int, default=0,
                         help='The threshold of the decoded code')
     parser.add_argument('--projector_id', type=int, default = 0,
                         help='The id of the projector')
@@ -111,10 +112,10 @@ if __name__ == '__main__':
                         help='1. matching, 2. rendering')
     parser.add_argument('--ph_coordinate', type=str, default = './data/phco.txt',
                         help='Projection image coordinates, eg: "./ph_coordinate.txt"')
-    parser.add_argument('--gray_folder', type=str,default=r"data\04232022\captured\position_00"
+    parser.add_argument('--gray_folder', type=str,default=r"data\05102031\captured\position_00"
                         #default = f'./data/{date_str}/captured/position_{time_str}/'
                         ,help='The folder where Gray codes are stored')
-    parser.add_argument('--match_np', type=str, default = "./result/match.npy",
+    parser.add_argument('--match_np', type=str, default = "./result/match0.npy",
                         help='The file name where the matching results are stored, eg: "./match.npy"')
     parser.add_argument('--test_image', type=str, default = "./picc.png",
                         help='Test image, eg: "./test.png"')
